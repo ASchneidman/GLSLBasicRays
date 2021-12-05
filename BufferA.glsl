@@ -1,4 +1,5 @@
 #iChannel0 "file://BufferA.glsl"
+#iChannel1 "file://KeyboardBuffer.glsl"
 #include "Common.glsl"
 
 
@@ -39,7 +40,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     // TODO: THIS NEEDS TO GET THE CURRENT STATE STORED IN SOME BUFFER
     // INSTEAD OF RESETTING EVERY FRAME
-    Camera camera = Camera_Reset(iResolution);
+    Camera camera = Camera_Get_Cached(iChannel1, iResolution);
 
     mat4 model, view;
     Camera_Model_View(camera, model, view);
@@ -59,16 +60,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 
     
-    Sphere sphere = Sphere(vec3(0.0, 0.0, -3.), 1.0);
+    Sphere sphere = Sphere(vec3(0.0, 0.0, -3.), 2.0);
     float t = traceSphere(ray, sphere);
     if (t >= 0.0) {
         vec3 intersection_point = ray.origin + ray.direction * t;
         vec3 color_norm = normalize(intersection_point - sphere.center);
+
         color_norm = (color_norm + 1.) / 2.;
         fragColor = vec4(color_norm, 1.0);
         return;
     }
 
     
-    fragColor = vec4(0.0,0.0,1.0,1.0);
+    fragColor = vec4(0.0,0.0,0.0,1.0);
 }
