@@ -7,23 +7,70 @@
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
     int id = int(floor(fragCoord.x));
-    if (id >= 5 || fragCoord.y > 0.5) {
+    if (id >= 6 || fragCoord.y > 0.5) {
         discard;
-        //discard;
     }
 
     // id 0 computes position
     // id 1 + i computes ith column of rotation
-
     Camera camera = Camera_Reset(iResolution);
     if (iFrame > 0) {
+        vec4 prev_iMouse = texelFetch(iChannel1, ivec2(5, 0), 0);
         camera = Camera_Get_Cached(iChannel1, iResolution);
+
+        mat4 model, view, rotation;
+        Camera_Model_View(camera, model, view, rotation);
+
+        vec3 total_move = vec3(0.0);
+        #if VSCODE
+        if (isKeyDown(Key_Shift)) {
+            camera.move_sens *= 2.0;
+        }
+        if (isKeyDown(Key_W)) {
+            // Camera looks along -z axis, so 
+            // take vector going along -z axis and transform
+            total_move += Vector_Transform(vec3(0.0, 0.0, -1.0), model);
+        }
+        if (isKeyDown(Key_S)) {
+            total_move += Vector_Transform(vec3(0.0, 0.0, 1.0), model);
+        }
+        if (isKeyDown(Key_D)) {
+            total_move += Vector_Transform(vec3(1.0, 0.0, 0.0), model);
+        }
+        if (isKeyDown(Key_A)) {
+            total_move += Vector_Transform(vec3(-1.0, 0.0, 0.0), model);
+        }
+
+        // Do translation
+        if (iMouse.z > 0.0) {
+            // Mouse is pressed, check if it was pressed last frame
+            if (prev_iMouse.z > 0.0) {
+                vec2 offset = iMouse.xy - prev_iMouse.xy;
+
+                camera.euler_angles += vec3(offset, 0.0) * camera.move_sens;
+            }
+        }
+
+        if (length(total_move) > 0.0) {
+            camera.position += normalize(total_move) * camera.move_sens;
+        }
+        #else
+        
+        #endif
     }
 
-
     if (id == 0) {
+        fragColor = vec4(camera.euler_angles, 0.0);
+        return;
+    }
+    if (id == 4) {
         fragColor = vec4(camera.position, 0.0);
         return;
     }
-    fragColor = camera.rotation[id - 1];
+    if (id == 5) {
+        fragColor = iMouse;
+        return;
+    }
+    //fragColor = camera.rotation[id];
+
 }

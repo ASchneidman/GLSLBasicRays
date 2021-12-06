@@ -42,8 +42,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     // INSTEAD OF RESETTING EVERY FRAME
     Camera camera = Camera_Get_Cached(iChannel1, iResolution);
 
-    mat4 model, view;
-    Camera_Model_View(camera, model, view);
+    mat4 model, view, rotation;
+    Camera_Model_View(camera, model, view, rotation);
 
 
     // Generate ray and transform to world space
