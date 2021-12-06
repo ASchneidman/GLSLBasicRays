@@ -18,13 +18,56 @@ vec3 hsv2rgb(vec3 c)
 
 
 mat4 euler_angles_to_rotation(vec3 ea) {
+    /*
+    mat4 X = mat4(
+        vec4(cos(ea.x), -sin(ea.x), 0.0, 0.0),
+        vec4(sin(ea.x), cos(ea.x), 0.0, 0.0),
+        vec4(0.0, 0.0, 1.0, 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+    mat4 Y = mat4(
+        vec4(1.0, 0.0, 0.0, 0.0),
+        vec4(0.0, cos(ea.y), -sin(ea.y), 0.0),
+        vec4(0.0, sin(ea.y), cos(ea.y), 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+    mat4 Z = mat4(
+        vec4(cos(ea.z), -sin(ea.z), 0.0, 0.0),
+        vec4(sin(ea.z), cos(ea.z), 0.0, 0.0),
+        vec4(0.0, 0.0, 1.0, 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+    */
+    mat4 X = mat4(
+        vec4(1.0, 0.0, 0.0, 0.0),
+        vec4(0.0, cos(ea.x), -sin(ea.x), 0.0),
+        vec4(0.0, sin(ea.x), cos(ea.x), 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+    mat4 Y = mat4(
+        vec4(cos(ea.y), 0.0, sin(ea.y), 0.0),
+        vec4(0.0, 1.0, 0.0, 0.0),
+        vec4(-sin(ea.y), 0.0, cos(ea.y), 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+    mat4 Z = mat4(
+        vec4(cos(ea.z), -sin(ea.z), 0.0, 0.0),
+        vec4(sin(ea.z), cos(ea.z), 0.0, 0.0),
+        vec4(0.0, 0.0, 1.0, 0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+
+
+    return Z * Y * X;
+
+    /*
     return mat4(
         vec4(cos(ea.z) * cos(ea.x) - cos(ea.y) * sin(ea.x) * sin(ea.z), 
             -sin(ea.z) * cos(ea.x) - cos(ea.y) * sin(ea.x) * cos(ea.z),
             sin(ea.y) * sin(ea.x),
             0.0),
-        vec4(cos(ea.z) * cos(ea.x) + cos(ea.y) * sin(ea.x) * sin(ea.z),
-            -sin(ea.z) * cos(ea.x) + cos(ea.y) * cos(ea.x) * cos(ea.z),
+        vec4(cos(ea.z) * sin(ea.x) + cos(ea.y) * cos(ea.x) * sin(ea.z),
+            -sin(ea.z) * sin(ea.x) + cos(ea.y) * cos(ea.x) * cos(ea.z),
             -sin(ea.y) * cos(ea.x),
             0.0),
         vec4(sin(ea.z) * sin(ea.y),
@@ -33,6 +76,7 @@ mat4 euler_angles_to_rotation(vec3 ea) {
             0.0),
         vec4(0.0, 0.0, 0.0, 1.0)
     );
+    */
 }
 
 

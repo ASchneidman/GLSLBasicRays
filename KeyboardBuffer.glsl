@@ -45,14 +45,20 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         if (iMouse.z > 0.0) {
             // Mouse is pressed, check if it was pressed last frame
             if (prev_iMouse.z > 0.0) {
-                vec2 offset = iMouse.xy - prev_iMouse.xy;
-
-                camera.euler_angles += vec3(offset, 0.0) * camera.move_sens;
+                vec2 offset = (iMouse.xy - prev_iMouse.xy) * vec2(1.0, -1.0) * camera.move_sens;
+                //vec3 euler_change = vec3(0.0, offset.yx);
+                vec3 euler_change = vec3(offset.yx, 0.0);
+                
+                camera.euler_angles += euler_change;
             }
         }
 
         if (length(total_move) > 0.0) {
             camera.position += normalize(total_move) * camera.move_sens;
+        }
+
+        if (isKeyDown(Key_R)) {
+            camera = Camera_Reset(iResolution);
         }
         #else
         
