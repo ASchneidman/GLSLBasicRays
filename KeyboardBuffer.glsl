@@ -4,6 +4,23 @@
 #iChannel1 "file://KeyboardBuffer.glsl"
 #include "Common.glsl"
 
+#if VSCODE
+#else
+#define KEYBOARD iChannel2
+
+const int Key_W = 87;
+const int Key_A = 65;
+const int Key_S = 83;
+const int Key_D = 68;
+const int Key_Shift = 16;
+const int Key_R = 82;
+
+
+bool isKeyDown(key) {
+    return texelFetch(KEYBOARD, ivec2(key, 0), 0).x > 0.0;
+}
+#endif
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
 {
     int id = int(floor(fragCoord.x));
@@ -22,7 +39,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         Camera_Model_View(camera, model, view, rotation);
 
         vec3 total_move = vec3(0.0);
-        #if VSCODE
+
         if (isKeyDown(Key_Shift)) {
             camera.move_sens *= 2.0;
         }
@@ -60,9 +77,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         if (isKeyDown(Key_R)) {
             camera = Camera_Reset(iResolution);
         }
-        #else
-        
-        #endif
     }
 
     if (id == 0) {
